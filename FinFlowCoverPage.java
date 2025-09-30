@@ -95,6 +95,7 @@ public class FinFlowCoverPage extends JFrame {
             continueButton.setFont(new Font("Inter", Font.BOLD, 18));
             continueButton.setForeground(Color.WHITE);
             continueButton.setBackground(new Color(90, 105, 255));
+            continueButton.setOpaque(true); // Important for background color on macOS
             continueButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
             continueButton.setFocusPainted(false);
             continueButton.setCursor(new Cursor(Cursor.HAND_CURSOR));

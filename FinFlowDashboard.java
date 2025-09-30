@@ -86,7 +86,7 @@ public class FinFlowDashboard extends JFrame {
         methodsPanel.add(createPaymentCard("Debit Card", "\uD83D\uDCB3", new Color(90, 105, 255)));
         methodsPanel.add(createPaymentCard("Credit Card", "\uD83D\uDCB5", new Color(255, 99, 132)));
         methodsPanel.add(createPaymentCard("UPI", "\uD83D\uDCF1", new Color(54, 185, 204)));
-        methodsPanel.add(createPaymentCard("Wallet", "\uD83D\uDCB0", new Color(255, 193, 7)));
+        methodsPanel.add(createPaymentCard("Bank Transfer", "\uD83D\uDCB0", new Color(255, 193, 7)));
 
         mainPanel.add(methodsPanel);
         mainPanel.add(Box.createVerticalGlue());
@@ -164,10 +164,20 @@ public class FinFlowDashboard extends JFrame {
         });
 
         button.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this,
-                    "'" + text + "' option selected.",
-                    "Option Selected",
-                    JOptionPane.INFORMATION_MESSAGE);
+            switch (text) {
+                case "Debit Card":
+                    new DebitCardPage().setVisible(true);
+                    break;
+                case "Credit Card":
+                    new CreditCardPage().setVisible(true);
+                    break;
+                case "UPI":
+                    new UpiPage().setVisible(true);
+                    break;
+                case "Bank Transfer":
+                    new BankTransferPage().setVisible(true);
+                    break;
+            }
         });
 
         return button;

@@ -68,8 +68,10 @@ public class FinFlowLoginPage extends JFrame {
         JButton signUpButton = new JButton("Sign Up");
         signUpButton.setFont(new Font("Inter", Font.BOLD, 14));
         signUpButton.setForeground(Color.WHITE);
-        signUpButton.setBackground(new Color(90, 105, 255));
+        signUpButton.setBackground(new Color(135, 206, 235)); // Sky blue
+        signUpButton.setOpaque(true);
         signUpButton.setFocusPainted(false);
+        signUpButton.setBorderPainted(false);
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
@@ -79,8 +81,10 @@ public class FinFlowLoginPage extends JFrame {
         JButton loginButton = new JButton("Login");
         loginButton.setFont(new Font("Inter", Font.BOLD, 14));
         loginButton.setForeground(Color.WHITE);
-        loginButton.setBackground(new Color(90, 105, 255));
+        loginButton.setBackground(new Color(135, 206, 235)); // Sky blue
+        loginButton.setOpaque(true);
         loginButton.setFocusPainted(false);
+        loginButton.setBorderPainted(false);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
@@ -93,11 +97,17 @@ public class FinFlowLoginPage extends JFrame {
 
             // Simple login validation
             if ("user".equals(username) && "password".equals(password)) {
-                JOptionPane.showMessageDialog(this, "Login Successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                
+                // Create and shsow the new login page
+                SwingUtilities.invokeLater(() -> {
+                    FinFlowDashboard Dashboard = new FinFlowDashboard();
+                    Dashboard.setVisible(true);
+                });
+
+                // Dispose the cover page and the login page on successful login
+                coverPageFrame.dispose();
                 this.dispose();
-                if(coverPageFrame != null) {
-                    coverPageFrame.dispose();
-                }
+                
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid Username or Password", "Error", JOptionPane.ERROR_MESSAGE);
             }
