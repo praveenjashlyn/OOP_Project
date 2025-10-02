@@ -5,43 +5,42 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-public class UpiPage extends JFrame {
+public class ReceiverDetailsPage extends JFrame {
 
-    // --- UI Components ---
-    private JTextField upiIdField;
-    private JTextField amountField;
+    private JTextField receiverNameField;
+    private JTextField phoneNoField;
+    private JLabel receiverNameErrorLabel;
+    private JLabel phoneNoErrorLabel;
 
-    // --- Error Labels for Inline Validation ---
-    private JLabel upiIdErrorLabel;
-    private JLabel amountErrorLabel;
-
-    public UpiPage() {
+    public ReceiverDetailsPage() {
         initUI();
     }
 
     private void initUI() {
-        setTitle("FinFlow - UPI Payment");
+        setTitle("FinFlow - Receiver Details");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(500, 400); // Adjusted height for error labels
+        setSize(500, 400);
         setLocationRelativeTo(null);
         setResizable(false);
         getContentPane().setBackground(new Color(30, 33, 45));
         setLayout(new BorderLayout());
 
-        add(createHeaderPanel(), BorderLayout.NORTH);
-        add(createFormPanel(), BorderLayout.CENTER);
-        setupValidationListeners();
-    }
-
-    private JPanel createHeaderPanel() {
+        // Header
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         headerPanel.setBackground(new Color(36, 40, 56));
         headerPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-        JLabel titleLabel = new JLabel("UPI Payment");
+        JLabel titleLabel = new JLabel("Enter Receiver's Details");
         titleLabel.setFont(new Font("Inter", Font.BOLD, 24));
         titleLabel.setForeground(Color.WHITE);
         headerPanel.add(titleLabel);
-        return headerPanel;
+        add(headerPanel, BorderLayout.NORTH);
+
+        // Form Panel
+        JPanel formPanel = createFormPanel();
+        add(formPanel, BorderLayout.CENTER);
+
+        // Add listeners for validation
+        setupValidationListeners();
     }
 
     private JPanel createFormPanel() {
@@ -52,93 +51,85 @@ public class UpiPage extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         int yPos = 0;
 
-        // --- UPI ID ---
+        // --- Receiver's Name ---
         gbc.gridx = 0; gbc.gridy = yPos; gbc.anchor = GridBagConstraints.EAST; gbc.insets = new Insets(10, 10, 0, 10);
-        formPanel.add(createLabel("UPI ID (Optional):"), gbc);
+        formPanel.add(createLabel("Receiver's Name:"), gbc);
         gbc.gridx = 1; gbc.gridy = yPos++; gbc.weightx = 1.0; gbc.anchor = GridBagConstraints.WEST;
-        upiIdField = createTextField(20);
-        formPanel.add(upiIdField, gbc);
+        receiverNameField = createTextField(20);
+        formPanel.add(receiverNameField, gbc);
         gbc.gridx = 1; gbc.gridy = yPos++; gbc.insets = new Insets(2, 12, 10, 10);
-        upiIdErrorLabel = createErrorLabel();
-        formPanel.add(upiIdErrorLabel, gbc);
+        receiverNameErrorLabel = createErrorLabel();
+        formPanel.add(receiverNameErrorLabel, gbc);
 
-        // --- Amount ---
+        // --- Phone Number ---
         gbc.gridx = 0; gbc.gridy = yPos; gbc.anchor = GridBagConstraints.EAST; gbc.insets = new Insets(10, 10, 0, 10);
-        formPanel.add(createLabel("Amount:"), gbc);
+        formPanel.add(createLabel("Phone Number:"), gbc);
         gbc.gridx = 1; gbc.gridy = yPos++; gbc.weightx = 1.0; gbc.anchor = GridBagConstraints.WEST;
-        amountField = createTextField(10);
-        formPanel.add(amountField, gbc);
+        phoneNoField = createTextField(20);
+        formPanel.add(phoneNoField, gbc);
         gbc.gridx = 1; gbc.gridy = yPos++; gbc.insets = new Insets(2, 12, 10, 10);
-        amountErrorLabel = createErrorLabel();
-        formPanel.add(amountErrorLabel, gbc);
+        phoneNoErrorLabel = createErrorLabel();
+        formPanel.add(phoneNoErrorLabel, gbc);
 
-        // --- Pay Button ---
-        JButton payButton = createPayButton();
+        // --- Continue Button ---
+        JButton continueButton = createContinueButton();
         gbc.gridx = 0; gbc.gridy = yPos; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
         gbc.weightx = 0; gbc.insets = new Insets(25, 10, 10, 10);
-        formPanel.add(payButton, gbc);
+        formPanel.add(continueButton, gbc);
 
         return formPanel;
     }
-
+    
     private void setupValidationListeners() {
-        upiIdField.getDocument().addDocumentListener(new ValidationListener(this::validateUpiId));
-        upiIdField.addFocusListener(new ValidationFocusListener(this::validateUpiId));
+        receiverNameField.getDocument().addDocumentListener(new ValidationListener(this::validateReceiverName));
+        receiverNameField.addFocusListener(new ValidationFocusListener(this::validateReceiverName));
 
-        amountField.getDocument().addDocumentListener(new ValidationListener(this::validateAmount));
-        amountField.addFocusListener(new ValidationFocusListener(this::validateAmount));
+        phoneNoField.getDocument().addDocumentListener(new ValidationListener(this::validatePhoneNo));
+        phoneNoField.addFocusListener(new ValidationFocusListener(this::validatePhoneNo));
     }
 
-    private boolean validateUpiId() {
-        String upiId = upiIdField.getText().trim();
-        // Field is optional, so an empty string is valid.
-        if (upiId.isEmpty()) {
-            upiIdErrorLabel.setText(" "); // Clear any previous error
-            return true;
-        }
-        // If not empty, it must match the UPI format.
-        if (!upiId.matches("^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+$")) {
-            upiIdErrorLabel.setText("Invalid UPI format (e.g., name@bank).");
+    private boolean validateReceiverName() {
+        String name = receiverNameField.getText().trim();
+        if (name.isEmpty()) {
+            receiverNameErrorLabel.setText("Receiver's name cannot be empty.");
+            return false;
+        } else if (!name.matches("^[a-zA-Z\\s'-]+$")) {
+            receiverNameErrorLabel.setText("Please enter a valid name.");
             return false;
         }
-        upiIdErrorLabel.setText(" "); // Clear error
+        receiverNameErrorLabel.setText(" ");
+        return true;
+    }
+    
+    private boolean validatePhoneNo() {
+        String phone = phoneNoField.getText().trim();
+        if (!phone.matches("\\d{10}")) {
+            phoneNoErrorLabel.setText("Phone number must be 10 digits.");
+            return false;
+        }
+        phoneNoErrorLabel.setText(" ");
         return true;
     }
 
-    private boolean validateAmount() {
-        String amountStr = amountField.getText().trim();
-        try {
-            if (Double.parseDouble(amountStr) <= 1) {
-                amountErrorLabel.setText("Amount must be greater than 1.");
-                return false;
-            }
-        } catch (NumberFormatException ex) {
-            amountErrorLabel.setText("Please enter a valid number.");
-            return false;
-        }
-        amountErrorLabel.setText(" "); // Clear error
-        return true;
-    }
-
-    private JButton createPayButton() {
-        JButton button = new JButton("Pay Now");
+    private JButton createContinueButton() {
+        JButton button = new JButton("Continue");
         button.setFont(new Font("Inter", Font.BOLD, 16));
         button.setForeground(Color.WHITE);
-        button.setBackground(new Color(54, 185, 204));
+        button.setBackground(new Color(90, 105, 255));
         button.setOpaque(true);
         button.setBorderPainted(false);
         button.setFocusPainted(false);
         button.setPreferredSize(new Dimension(150, 40));
 
         button.addActionListener(e -> {
-            boolean isUpiValid = validateUpiId();
-            boolean isAmountValid = validateAmount();
+            boolean isNameValid = validateReceiverName();
+            boolean isPhoneValid = validatePhoneNo();
 
-            if (isUpiValid && isAmountValid) {
-                new OTPPage(new Color(54, 185, 204)).setVisible(true); // Open OTP page with UPI theme
-                this.dispose();
+            if (isNameValid && isPhoneValid) {
+                new PaymentMethodsPage().setVisible(true);
+                this.dispose(); // Close this page
             } else {
-                JOptionPane.showMessageDialog(this, "Please fix the errors shown in red.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Please fix the errors shown in red.", "Invalid Details", JOptionPane.ERROR_MESSAGE);
             }
         });
         return button;
@@ -179,7 +170,7 @@ public class UpiPage extends JFrame {
         textField.setBackground(new Color(40, 44, 55));
         textField.setForeground(Color.WHITE);
         textField.setCaretColor(Color.WHITE);
-        Color themeColor = new Color(54, 185, 204);
+        Color themeColor = new Color(90, 105, 255);
         textField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(themeColor),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
