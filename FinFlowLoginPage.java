@@ -7,10 +7,15 @@ public class FinFlowLoginPage extends JFrame {
 
     public FinFlowLoginPage(JFrame coverPageFrame) {
         this.coverPageFrame = coverPageFrame;
-        initUI();
+        initUI(true); // Show back button
     }
 
-    private void initUI() {
+    public FinFlowLoginPage() {
+        this.coverPageFrame = null; // No cover page to go back to
+        initUI(false); // Hide back button
+    }
+
+    private void initUI(boolean showBackButton) {
         setTitle("FinFlow - Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
@@ -89,6 +94,27 @@ public class FinFlowLoginPage extends JFrame {
         gbc.gridy = 2;
         gbc.gridwidth = 1;
         mainPanel.add(loginButton, gbc);
+
+        if (showBackButton) {
+            JButton backButton = new JButton("Back");
+            backButton.setFont(new Font("Inter", Font.BOLD, 14));
+            backButton.setForeground(Color.WHITE);
+            backButton.setBackground(new Color(100, 100, 100)); // A neutral gray
+            backButton.setOpaque(true);
+            backButton.setFocusPainted(false);
+            backButton.setBorderPainted(false);
+            gbc.gridx = 0;
+            gbc.gridy = 3;
+            gbc.gridwidth = 2; // Span both columns
+            gbc.anchor = GridBagConstraints.CENTER;
+            mainPanel.add(backButton, gbc);
+
+            backButton.addActionListener(e -> {
+                this.dispose();
+                coverPageFrame.setVisible(true);
+            });
+        }
+
 
         // Add action listener to the login button
         loginButton.addActionListener(e -> {
