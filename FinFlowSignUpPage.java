@@ -180,6 +180,54 @@ public class FinFlowSignUpPage extends JFrame {
         gbc.insets = new Insets(0, 20, 10, 20);
         mainPanel.add(ifscErrorLabel, gbc);
 
+        // --- Password ---
+        gbc.insets = new Insets(5, 20, 0, 20);
+        JLabel passwordLabel = new JLabel("<html>Password <font color='red'>*</font></html>");
+        passwordLabel.setForeground(Color.WHITE);
+        passwordLabel.setFont(new Font("Inter", Font.BOLD, 14));
+        gbc.gridy++;
+        mainPanel.add(passwordLabel, gbc);
+
+        JPasswordField passwordField = new RoundedPasswordField();
+        passwordField.setForeground(Color.WHITE);
+        passwordField.setBackground(new Color(40, 44, 55));
+        passwordField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(70, 75, 90)),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        passwordField.setCaretColor(Color.WHITE);
+        gbc.gridy++;
+        gbc.insets = new Insets(0, 20, 10, 20);
+        mainPanel.add(passwordField, gbc);
+
+        // --- Retype Password ---
+        gbc.insets = new Insets(5, 20, 0, 20);
+        JLabel retypePasswordLabel = new JLabel("<html>Retype Password <font color='red'>*</font></html>");
+        retypePasswordLabel.setForeground(Color.WHITE);
+        retypePasswordLabel.setFont(new Font("Inter", Font.BOLD, 14));
+        gbc.gridy++;
+        mainPanel.add(retypePasswordLabel, gbc);
+
+        JPasswordField retypePasswordField = new RoundedPasswordField();
+        retypePasswordField.setForeground(Color.WHITE);
+        retypePasswordField.setBackground(new Color(40, 44, 55));
+        retypePasswordField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(70, 75, 90)),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        retypePasswordField.setCaretColor(Color.WHITE);
+        gbc.gridy++;
+        gbc.insets = new Insets(0, 20, 0, 20);
+        mainPanel.add(retypePasswordField, gbc);
+
+        JLabel passwordErrorLabel = new JLabel("Passwords do not match.");
+        passwordErrorLabel.setForeground(Color.RED);
+        passwordErrorLabel.setFont(new Font("Inter", Font.PLAIN, 12));
+        passwordErrorLabel.setVisible(false);
+        gbc.gridy++;
+        gbc.insets = new Insets(0, 20, 10, 20);
+        mainPanel.add(passwordErrorLabel, gbc);
+
         // --- Debit Card ---
         gbc.insets = new Insets(5, 20, 0, 20);
         JLabel debitCardLabel = new JLabel("Debit Card (Optional)");
@@ -440,13 +488,52 @@ public class FinFlowSignUpPage extends JFrame {
         addValidationListener(creditExpiryField, creditExpiryErrorLabel, "^(0[1-9]|1[0-2])/([0-9]{2})?$", "Expiry date must be in MM/YY format.");
         addValidationListener(creditCvvField, creditCvvErrorLabel, "^(\\d{3,4})?$", "CVV must be 3 or 4 digits.");
         addValidationListener(upiField, upiErrorLabel, "^([\\w.-]+@[\\w.-]+)?$", "Invalid UPI ID format.");
+        addValidationListener(passwordField, passwordErrorLabel, "^.{8,}$", "Password must be at least 8 characters.");
+
+        // Password matching validation
+        retypePasswordField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                retypePasswordField.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(90, 105, 255), 2), // Highlight color
+                    BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                ));
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                String pass = new String(passwordField.getPassword());
+                String retypePass = new String(retypePasswordField.getPassword());
+                if (!pass.equals(retypePass)) {
+                    passwordErrorLabel.setText("Passwords do not match.");
+                    passwordErrorLabel.setVisible(true);
+                    retypePasswordField.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Color.RED, 2),
+                        BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                    ));
+                } else {
+                    passwordErrorLabel.setVisible(false);
+                    retypePasswordField.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(70, 75, 90)),
+                        BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                    ));
+                }
+            }
+        });
 
 
         signUpButton.addActionListener(_ -> {
             // Final validation check
             boolean allValid = true;
+            String pass = new String(passwordField.getPassword());
+            String retypePass = new String(retypePasswordField.getPassword());
+
+            if (!pass.equals(retypePass)) {
+                passwordErrorLabel.setVisible(true);
+                allValid = false;
+            } else {
+                passwordErrorLabel.setVisible(false);
+            }
+
             if (nameErrorLabel.isVisible() || emailErrorLabel.isVisible() || phoneErrorLabel.isVisible() ||
-                accNumErrorLabel.isVisible() || ifscErrorLabel.isVisible() || debitCardErrorLabel.isVisible() ||
+                accNumErrorLabel.isVisible() || ifscErrorLabel.isVisible() || passwordErrorLabel.isVisible() || debitCardErrorLabel.isVisible() ||
                 debitExpiryErrorLabel.isVisible() || debitCvvErrorLabel.isVisible() ||
                 creditCardErrorLabel.isVisible() || creditExpiryErrorLabel.isVisible() || creditCvvErrorLabel.isVisible() ||
                 upiErrorLabel.isVisible()) {
@@ -455,7 +542,7 @@ public class FinFlowSignUpPage extends JFrame {
 
             // Also check mandatory fields aren't empty
             if (nameField.getText().isEmpty() || emailField.getText().isEmpty() || phoneField.getText().isEmpty() ||
-                accNumField.getText().isEmpty() || ifscField.getText().isEmpty()) {
+                accNumField.getText().isEmpty() || ifscField.getText().isEmpty() || pass.isEmpty()) {
                 allValid = false;
                  JOptionPane.showMessageDialog(this, "Please fill in all mandatory fields.", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -468,7 +555,7 @@ public class FinFlowSignUpPage extends JFrame {
                 this.dispose();
             } else {
                  if (!(nameField.getText().isEmpty() || emailField.getText().isEmpty() || phoneField.getText().isEmpty() ||
-                accNumField.getText().isEmpty() || ifscField.getText().isEmpty()))
+                accNumField.getText().isEmpty() || ifscField.getText().isEmpty() || pass.isEmpty()))
                 JOptionPane.showMessageDialog(this, "Please correct the errors in the form.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -490,7 +577,13 @@ public class FinFlowSignUpPage extends JFrame {
                 ));
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
-                String text = field.getText();
+                String text;
+                if (field instanceof JPasswordField) {
+                    text = new String(((JPasswordField) field).getPassword());
+                } else {
+                    text = field.getText();
+                }
+
                 if (!text.matches(regex)) {
                     field.setBorder(BorderFactory.createCompoundBorder(
                         BorderFactory.createLineBorder(Color.RED, 2), // Error color
@@ -500,7 +593,7 @@ public class FinFlowSignUpPage extends JFrame {
                     errorLabel.setVisible(true);
                 } else {
                     field.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(new Color(70, 75, 90)), // Default color
+                        BorderFactory.createLineBorder(new Color(70, 75, 90)),
                         BorderFactory.createEmptyBorder(10, 10, 10, 10)
                     ));
                     errorLabel.setVisible(false);
