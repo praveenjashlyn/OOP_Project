@@ -320,7 +320,7 @@ public class BankTransferPage extends JFrame {
         button.setFocusPainted(false);
         button.setPreferredSize(new Dimension(180, 40));
 
-        button.addActionListener(e -> {
+        button.addActionListener(_ -> {
             boolean isAllValid = validateAccNum() & validateConfirmAccNum() & validateIfsc() &
                                  validateBeneficiaryName() & validateAmount();
 

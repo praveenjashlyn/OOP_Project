@@ -130,7 +130,7 @@ public class UpiPage extends JFrame {
         button.setFocusPainted(false);
         button.setPreferredSize(new Dimension(150, 40));
 
-        button.addActionListener(e -> {
+        button.addActionListener(_ -> {
             boolean isUpiValid = validateUpiId();
             boolean isAmountValid = validateAmount();
 

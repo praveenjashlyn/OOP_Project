@@ -100,7 +100,7 @@ public class FinFlowCoverPage extends JFrame {
             continueButton.setFocusPainted(false);
             continueButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
             continueButton.setVisible(false); // Initially hidden
-            continueButton.addActionListener(e -> {
+            continueButton.addActionListener(_ -> {
                 // Create and show the new login page
                 SwingUtilities.invokeLater(() -> {
                     FinFlowLoginPage loginPage = new FinFlowLoginPage(parentFrame);

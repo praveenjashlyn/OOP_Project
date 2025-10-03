@@ -224,7 +224,7 @@ public class OTPPage extends JFrame {
         add(verifyButton, gbc);
         
         // --- Action Listener ---
-        verifyButton.addActionListener(e -> {
+        verifyButton.addActionListener(_ -> {
             String otp = new String(otpField.getPassword()).trim();
             if (otp.matches("\\d{6}")) {
                 // *** THIS IS THE MODIFIED PART ***

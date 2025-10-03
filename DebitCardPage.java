@@ -1139,7 +1139,7 @@ public class DebitCardPage extends JFrame {
         payButton.setBorderPainted(false);
         payButton.setFocusPainted(false);
 
-        payButton.addActionListener(e -> {
+        payButton.addActionListener(_ -> {
             boolean isAllValid = validateSenderName() &
                                  validateCardNumber() & validateExpiryDate() &
                                  validateCvv() & validateAmount();

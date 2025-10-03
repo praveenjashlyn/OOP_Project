@@ -109,7 +109,7 @@ public class PaymentMethodsPage extends JFrame {
         });
 
         // Action listener to open the correct payment page
-        button.addActionListener(e -> {
+        button.addActionListener(_ -> {
             switch (text) {
                 case "Debit Card":
                     new DebitCardPage().setVisible(true);

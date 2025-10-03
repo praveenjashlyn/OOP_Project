@@ -4,7 +4,6 @@ import java.awt.geom.RoundRectangle2D;
 
 public class RoundedPasswordField extends JPasswordField {
 
-    private Shape shape;
     private final int arc = 15;
 
     // Add this no-argument constructor

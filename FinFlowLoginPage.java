@@ -109,7 +109,7 @@ public class FinFlowLoginPage extends JFrame {
             gbc.anchor = GridBagConstraints.CENTER;
             mainPanel.add(backButton, gbc);
 
-            backButton.addActionListener(e -> {
+            backButton.addActionListener(_ -> {
                 this.dispose();
                 coverPageFrame.setVisible(true);
             });
@@ -117,7 +117,7 @@ public class FinFlowLoginPage extends JFrame {
 
 
         // Add action listener to the login button
-        loginButton.addActionListener(e -> {
+        loginButton.addActionListener(_ -> {
             String username = userText.getText();
             String password = new String(passwordText.getPassword());
 
@@ -140,7 +140,7 @@ public class FinFlowLoginPage extends JFrame {
         });
 
         // Updated action listener to open the new sign-up page
-        signUpButton.addActionListener(e -> {
+        signUpButton.addActionListener(_ -> {
             FinFlowSignUpPage signUpPage = new FinFlowSignUpPage();
             signUpPage.setVisible(true);
         });
