@@ -40,7 +40,7 @@ public class FinFlowCoverPage extends JFrame {
      */
     static class CoverPanel extends JPanel implements ActionListener {
 
-        private final JFrame parentFrame; // Added field to store the parent frame
+        private final JFrame parentFrame; // Add\\\\ed field to store the parent frame
 
         private final Timer timer;
 

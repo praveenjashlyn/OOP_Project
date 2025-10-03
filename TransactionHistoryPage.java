@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
 
 public class TransactionHistoryPage extends JFrame {
@@ -27,20 +29,28 @@ public class TransactionHistoryPage extends JFrame {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         mainPanel.add(titleLabel, BorderLayout.NORTH);
 
-        // Transaction List
-        JPanel transactionsPanel = new JPanel();
-        transactionsPanel.setBackground(new Color(24, 28, 40));
-        transactionsPanel.setLayout(new BoxLayout(transactionsPanel, BoxLayout.Y_AXIS));
+        // --- Table Setup ---
+        // In a real application, this data would be fetched from a database (e.g., using JDBC).
+        String[] columnNames = {"Date", "Transaction ID", "Receiver/Sender", "Amount", "Balance"};
+        Object[][] data = {
+            {"03 Oct 2025", "TXN789012", "Sent to John Doe", "- ₹5,000.00", "₹20,000.00"},
+            {"02 Oct 2025", "TXN654321", "Received from Jane Smith", "+ ₹2,500.00", "₹25,000.00"},
+            {"01 Oct 2025", "TXN987654", "Online Shopping", "- ₹1,200.00", "₹22,500.00"},
+            {"30 Sep 2025", "TXN123456", "Salary Credit", "+ ₹50,000.00", "₹23,700.00"},
+            {"29 Sep 2025", "TXN456789", "Rent Payment", "- ₹15,000.00", "₹-26,300.00"},
+            {"28 Sep 2025", "TXN789123", "Cash Withdrawal", "- ₹3,000.00", "₹11,300.00"},
+            {"27 Sep 2025", "TXN321654", "Received from Mike", "+ ₹1,000.00", "₹14,300.00"},
+            {"26 Sep 2025", "TXN654987", "Electricity Bill", "- ₹850.00", "₹13,300.00"},
+            {"25 Sep 2025", "TXN987321", "Sent to Emily", "- ₹2,000.00", "₹14,150.00"},
+            {"24 Sep 2025", "TXN123789", "Zomato Order", "- ₹450.00", "₹16,150.00"}
+        };
 
-        // Placeholder transactions
-        for (int i = 1; i <= 10; i++) {
-            transactionsPanel.add(createTransactionPanel("Transaction " + i, "Amount: $" + (i * 100)));
-        }
+        JTable transactionTable = new JTable(data, columnNames);
+        styleTable(transactionTable);
 
-        JScrollPane scrollPane = new JScrollPane(transactionsPanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setBorder(null);
+        JScrollPane scrollPane = new JScrollPane(transactionTable);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        scrollPane.getViewport().setBackground(new Color(24, 28, 40));
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
         // Back Button
@@ -50,6 +60,7 @@ public class TransactionHistoryPage extends JFrame {
         backButton.setBackground(new Color(90, 105, 255));
         backButton.setFocusPainted(false);
         backButton.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+        backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         backButton.addActionListener(_ -> {
             dispose();
             dashboard.setVisible(true);
@@ -57,30 +68,59 @@ public class TransactionHistoryPage extends JFrame {
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.setBackground(new Color(24, 28, 40));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         buttonPanel.add(backButton);
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         add(mainPanel);
     }
 
-    private JPanel createTransactionPanel(String description, String amount) {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(new Color(40, 44, 55));
-        panel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(70, 75, 90)),
-            BorderFactory.createEmptyBorder(15, 20, 15, 20)
-        ));
+    private void styleTable(JTable table) {
+        table.setBackground(new Color(40, 44, 55));
+        table.setForeground(Color.WHITE);
+        table.setGridColor(new Color(70, 75, 90));
+        table.setFont(new Font("Inter", Font.PLAIN, 14));
+        table.setRowHeight(40);
+        table.setSelectionBackground(new Color(90, 105, 255));
+        table.setSelectionForeground(Color.WHITE);
+        table.setShowGrid(true);
+        table.setShowVerticalLines(false);
+        table.setFillsViewportHeight(true);
+        table.setIntercellSpacing(new Dimension(0, 1));
 
-        JLabel descriptionLabel = new JLabel(description);
-        descriptionLabel.setForeground(Color.WHITE);
-        descriptionLabel.setFont(new Font("Inter", Font.PLAIN, 16));
-        panel.add(descriptionLabel, BorderLayout.WEST);
+        // Style the table header
+        JTableHeader header = table.getTableHeader();
+        header.setBackground(new Color(36, 40, 56));
+        header.setForeground(new Color(180, 180, 180));
+        header.setFont(new Font("Inter", Font.BOLD, 16));
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(90, 105, 255)));
+        header.setPreferredSize(new Dimension(header.getWidth(), 50));
 
-        JLabel amountLabel = new JLabel(amount);
-        amountLabel.setForeground(Color.GREEN);
-        amountLabel.setFont(new Font("Inter", Font.BOLD, 16));
-        panel.add(amountLabel, BorderLayout.EAST);
+        // Make table non-editable
+        table.setDefaultEditor(Object.class, null);
 
-        return panel;
+        // Custom cell renderer to color the "Amount" column
+        DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (column == 3) { // Amount column
+                    String amount = (String) value;
+                    if (amount.startsWith("+")) {
+                        c.setForeground(new Color(34, 197, 94)); // Green for credit
+                    } else {
+                        c.setForeground(new Color(239, 68, 68)); // Red for debit
+                    }
+                } else {
+                    c.setForeground(isSelected ? Color.WHITE : new Color(220, 220, 220));
+                }
+                setHorizontalAlignment(SwingConstants.CENTER);
+                return c;
+            }
+        };
+
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(cellRenderer);
+        }
     }
 }

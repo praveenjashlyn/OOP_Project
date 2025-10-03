@@ -227,25 +227,8 @@ public class OTPPage extends JFrame {
         verifyButton.addActionListener(_ -> {
             String otp = new String(otpField.getPassword()).trim();
             if (otp.matches("\\d{6}")) {
-                // *** THIS IS THE MODIFIED PART ***
-
-                // 1. Remove all components from the frame
-                getContentPane().removeAll();
-
-                // 2. Create and style the success label
-                JLabel successLabel = new JLabel("Payment Successful!");
-                successLabel.setFont(new Font("Inter", Font.BOLD, 28));
-                successLabel.setForeground(new Color(40, 180, 99)); // A nice green color
-                successLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-                // 3. Change layout and add the new label to center it
-                setLayout(new BorderLayout());
-                add(successLabel, BorderLayout.CENTER);
-
-                // 4. Refresh the frame to show the changes
-                revalidate();
-                repaint();
-                
+                dispose(); // Close the OTP window
+                new PaymentSuccessPage().setVisible(true); // Show the success page
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid OTP. Please enter the 6-digit code.", "Verification Failed", JOptionPane.ERROR_MESSAGE);
             }

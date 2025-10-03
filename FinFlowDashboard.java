@@ -1,4 +1,3 @@
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -36,6 +35,51 @@ public class FinFlowDashboard extends JFrame {
         appTitle.setForeground(new Color(90, 105, 255));
         headerPanel.add(appTitle);
         headerPanel.add(Box.createHorizontalGlue());
+
+        // User Name Label
+        JLabel userNameLabel = new JLabel("John Doe");
+        userNameLabel.setFont(new Font("Inter", Font.BOLD, 16));
+        userNameLabel.setForeground(Color.WHITE);
+        userNameLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 15)); // Add some spacing to the right
+        headerPanel.add(userNameLabel);
+
+        // Hamburger menu button
+        JButton menuButton = new JButton("☰");
+        menuButton.setFont(new Font("Inter", Font.BOLD, 24));
+        menuButton.setForeground(Color.WHITE);
+        menuButton.setOpaque(false);
+        menuButton.setContentAreaFilled(false);
+        menuButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        menuButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        headerPanel.add(menuButton);
+
+        // Popup menu for user details and logout
+        JPopupMenu userMenu = new JPopupMenu();
+        userMenu.setBackground(new Color(40, 44, 55));
+        userMenu.setBorder(BorderFactory.createLineBorder(new Color(70, 75, 90)));
+
+        // User details
+        addMenuItem(userMenu, "Mobile: +91 98765 43210");
+        addMenuItem(userMenu, "Email: john.doe@example.com");
+
+        userMenu.addSeparator();
+
+        // Logout button
+        JMenuItem logoutItem = new JMenuItem("Logout");
+        logoutItem.setFont(new Font("Inter", Font.BOLD, 14));
+        logoutItem.setForeground(new Color(255, 99, 132)); // Red color for logout
+        logoutItem.setBackground(new Color(40, 44, 55));
+        logoutItem.addActionListener(_ -> {
+            // Logic to logout and return to login screen
+            this.dispose();
+            new FinFlowCoverPage().setVisible(true);
+        });
+        userMenu.add(logoutItem);
+
+        menuButton.addActionListener(_ -> {
+            userMenu.show(menuButton, 0, menuButton.getHeight());
+        });
+
         add(headerPanel, BorderLayout.NORTH);
 
         // Main panel
@@ -89,6 +133,15 @@ public class FinFlowDashboard extends JFrame {
         mainPanel.add(createTransactionHistoryPanel(), BorderLayout.CENTER);
 
         add(mainPanel, BorderLayout.CENTER);
+    }
+
+    private void addMenuItem(JPopupMenu menu, String text) {
+        JMenuItem menuItem = new JMenuItem(text);
+        menuItem.setFont(new Font("Inter", Font.PLAIN, 14));
+        menuItem.setForeground(Color.WHITE);
+        menuItem.setBackground(new Color(40, 44, 55));
+        menuItem.setEnabled(false); // Make it non-clickable
+        menu.add(menuItem);
     }
 
     private JPanel createTransactionHistoryPanel() {

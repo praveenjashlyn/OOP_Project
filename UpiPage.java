@@ -135,8 +135,8 @@ public class UpiPage extends JFrame {
             boolean isAmountValid = validateAmount();
 
             if (isUpiValid && isAmountValid) {
+                dispose();
                 new OTPPage(new Color(54, 185, 204)).setVisible(true); // Open OTP page with UPI theme
-                this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Please fix the errors shown in red.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
             }
